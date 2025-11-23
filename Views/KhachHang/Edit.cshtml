@@ -1,0 +1,29 @@
+﻿@model QLKhoHang.Models.KhachHang
+
+<h2>Sửa thông tin khách hàng</h2>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label>Mã khách hàng</label>
+        <input asp-for="MaKH" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label>Tên khách hàng</label>
+        <input asp-for="TenKH" class="form-control" />
+        <span asp-validation-for="TenKH" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Số điện thoại</label>
+        <input asp-for="SDT" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Địa chỉ</label>
+        <input asp-for="DiaChi" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Lưu thay đổi</button>
+    <a asp-action="Index" class="btn btn-secondary mt-2">Hủy</a>
+</form>

@@ -1,0 +1,89 @@
+﻿@model QLKhoHang.Models.PhieuNhap
+
+@{
+    ViewData["Title"] = "Chi tiết phiếu nhập";
+    var tongTien = 0M;
+}
+
+<h2 class="mb-4">📄 Chi tiết phiếu nhập</h2>
+
+<div class="card p-3 mb-4">
+    <p><strong>Mã phiếu:</strong> @Model.MaPN</p>
+    <p><strong>Ngày nhập:</strong> @Model.NgayNhap.ToString("dd/MM/yyyy")</p>
+    <p><strong>Nhân viên:</strong> @Model.NhanVien?.TenNV</p>
+    <p><strong>Nhà cung cấp:</strong> @Model.NhaCungCap?.TenNCC</p>
+</div>
+
+<a asp-action="Create"
+   asp-controller="CT_PhieuNhap"
+   asp-route-id="@Model.MaPN"
+   class="btn btn-success mb-3">
+    ➕ Thêm chi tiết
+</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>Mã hàng</th>
+            <th>Tên hàng</th>
+            <th>Số lượng</th>
+            <th>Đơn giá nhập</th>
+            <th>Thành tiền</th>
+            <th width="100">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CT_PhieuNhap != null && Model.CT_PhieuNhap.Any())
+        {
+            foreach (var ct in Model.CT_PhieuNhap)
+            {
+                var thanhTien = ct.SoLuong * ct.DonGiaNhap;
+                tongTien += thanhTien;
+
+                <tr>
+                    <td>@ct.MaHang</td>
+                    <td>@ct.HangHoa?.TenHang</td>
+                    <td class="text-center">@ct.SoLuong</td>
+                    <td class="text-end">@ct.DonGiaNhap.ToString("N0")</td>
+                    <td class="text-end">@thanhTien.ToString("N0")</td>
+                    <td class="text-center">
+
+                        <form asp-controller="CT_PhieuNhap"
+                              asp-action="Delete"
+                              method="post"
+                              onsubmit="return confirm('Xóa hàng này khỏi phiếu nhập?');">
+
+                            <input type="hidden" name="maPN" value="@ct.MaPN" />
+                            <input type="hidden" name="maHang" value="@ct.MaHang" />
+
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Xóa
+                            </button>
+                        </form>
+
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center text-muted">
+                    Chưa có chi tiết
+                </td>
+            </tr>
+        }
+    </tbody>
+
+    <tfoot class="table-secondary">
+        <tr>
+            <th colspan="4" class="text-end">TỔNG TIỀN</th>
+            <th class="text-end">
+                @tongTien.ToString("N0") VNĐ
+            </th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">🔙 Quay lại danh sách</a>

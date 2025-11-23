@@ -1,0 +1,48 @@
+﻿@model QLKhoHang.Models.KhachHang
+
+<h2>Chi tiết khách hàng</h2>
+
+<div class="card p-3">
+    <h4>@Model.TenKH (@Model.MaKH)</h4>
+
+    <p><strong>SĐT:</strong> @Model.SDT</p>
+    <p><strong>Địa chỉ:</strong> @Model.DiaChi</p>
+</div>
+
+<hr />
+
+<h4>Danh sách phiếu xuất</h4>
+
+@if (Model.PhieuXuat == null || !Model.PhieuXuat.Any())
+{
+    <p class="text-muted">Không có phiếu xuất nào.</p>
+}
+else
+{
+    <table class="table table-bordered mt-2">
+        <thead>
+            <tr>
+                <th>Mã PX</th>
+                <th>Ngày xuất</th>
+                <th>Nhân viên</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var px in Model.PhieuXuat)
+            {
+                <tr>
+                    <td>@px.MaPX</td>
+                    <td>@px.NgayXuat.ToString("dd/MM/yyyy")</td>
+                    <td>@px.NhanVien?.TenNV</td>
+                    <td>
+                        <a asp-controller="PhieuXuat" asp-action="Details" asp-route-id="@px.MaPX" class="btn btn-info btn-sm">
+                            Xem
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>

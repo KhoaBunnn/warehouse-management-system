@@ -1,0 +1,32 @@
+﻿@model IEnumerable<QLKhoHang.Models.NhaCungCap>
+
+<h2>Danh sách Nhà cung cấp</h2>
+
+<a class="btn btn-primary mb-3" href="/NhaCungCap/Create">Thêm NCC</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Mã NCC</th>
+            <th>Tên NCC</th>
+            <th>SDT</th>
+            <th>Địa chỉ</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaNCC</td>
+                <td>@item.TenNCC</td>
+                <td>@item.SDT</td>
+                <td>@item.DiaChi</td>
+                <td>
+                    <a href="/NhaCungCap/Edit/@item.MaNCC" class="btn btn-sm btn-warning">Sửa</a>
+                    <a href="/NhaCungCap/Delete/@item.MaNCC" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

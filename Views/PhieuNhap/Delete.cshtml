@@ -1,0 +1,11 @@
+﻿@model QLKhoHang.Models.PhieuNhap
+
+<div class="container mt-5">
+    <h3>Bạn có muốn xóa phiếu @Model.MaPN không ?</h3>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="MaPN" />
+        <button class="btn btn-danger">Xóa</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>

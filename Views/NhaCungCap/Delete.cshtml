@@ -1,0 +1,31 @@
+﻿@model QLKhoHang.Models.NhaCungCap
+
+<h2>Xóa nhà cung cấp</h2>
+
+<div class="alert alert-warning">
+    Bạn có chắc chắn muốn xóa nhà cung cấp này không?
+</div>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Mã NCC</th>
+        <td>@Model.MaNCC</td>
+    </tr>
+    <tr>
+        <th>Tên NCC</th>
+        <td>@Model.TenNCC</td>
+    </tr>
+    <tr>
+        <th>SĐT</th>
+        <td>@Model.SDT</td>
+    </tr>
+    <tr>
+        <th>Địa chỉ</th>
+        <td>@Model.DiaChi</td>
+    </tr>
+</table>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a href="/NhaCungCap" class="btn btn-secondary">Hủy</a>
+</form>

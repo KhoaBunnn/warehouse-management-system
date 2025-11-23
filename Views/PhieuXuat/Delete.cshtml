@@ -1,0 +1,17 @@
+﻿@model QLKhoHang.Models.PhieuXuat
+
+<h2>Xóa Phiếu Xuất</h2>
+
+<div class="alert alert-danger">
+    Bạn có chắc chắn muốn xóa phiếu <strong>@Model.MaPX</strong> không?
+</div>
+
+<p><strong>Ngày:</strong> @Model.NgayXuat.ToString("dd/MM/yyyy")</p>
+<p><strong>Khách hàng:</strong> @Model.KhachHang?.TenKH</p>
+<p><strong>Nhân viên:</strong> @Model.NhanVien?.TenNV</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.MaPX" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

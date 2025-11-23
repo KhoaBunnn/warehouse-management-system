@@ -1,0 +1,42 @@
+﻿@model QLKhoHang.Models.PhieuXuat
+
+<h2>Tạo Phiếu Xuất</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group mb-2">
+        <label>Mã Phiếu Xuất</label>
+        <input name="MaPX" class="form-control" value="@ViewBag.NewId" readonly />
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Ngày Xuất</label>
+        <input asp-for="NgayXuat" type="date" class="form-control"
+               value="@(Model?.NgayXuat.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))" />
+        <span asp-validation-for="NgayXuat" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Nhân Viên</label>
+        <select name="MaNV" class="form-control" required>
+            <option value="">-- Chọn nhân viên --</option>
+            @foreach (var nv in ViewBag.NhanVien)
+            {
+                <option value="@nv.MaNV">@nv.TenNV</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Khách Hàng</label>
+        <select name="MaKH" class="form-control" required>
+            <option value="">-- Chọn khách hàng --</option>
+            @foreach (var kh in ViewBag.KhachHang)
+            {
+                <option value="@kh.MaKH">@kh.TenKH</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu phiếu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>

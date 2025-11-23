@@ -1,0 +1,34 @@
+﻿@model QLKhoHang.Models.KhachHang
+
+<h2>Xóa khách hàng</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card p-3">
+    <p><strong>Mã KH:</strong> @Model.MaKH</p>
+    <p><strong>Tên KH:</strong> @Model.TenKH</p>
+    <p><strong>SĐT:</strong> @Model.SDT</p>
+    <p><strong>Địa chỉ:</strong> @Model.DiaChi</p>
+
+    @if (Model.PhieuXuat != null && Model.PhieuXuat.Any())
+    {
+        <div class="alert alert-warning mt-2">
+            ⚠ Khách hàng này đã có <strong>@Model.PhieuXuat.Count()</strong> phiếu xuất.
+            <br />Bạn không thể xóa khách hàng đã phát sinh giao dịch!
+        </div>
+    }
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="MaKH" value="@Model.MaKH" />
+
+    <button type="submit" class="btn btn-danger mt-3"
+            @(Model.PhieuXuat != null && Model.PhieuXuat.Any() ? "disabled" : "")>
+        Xóa
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>
+</form>

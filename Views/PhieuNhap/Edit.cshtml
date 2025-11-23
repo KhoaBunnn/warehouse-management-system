@@ -1,0 +1,44 @@
+﻿@model QLKhoHang.Models.PhieuNhap
+
+<h2>Sửa Phiếu Nhập</h2>
+
+<form asp-action="Edit" method="post">
+
+    <div class="form-group">
+        <label>Mã phiếu nhập</label>
+        <input asp-for="MaPN" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label>Ngày nhập</label>
+        <input asp-for="NgayNhap" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Nhân viên</label>
+        <select asp-for="MaNV" class="form-control">
+            @foreach (var nv in ViewBag.NhanVien)
+            {
+                <option value="@nv.MaNV" selected="@(nv.MaNV == Model.MaNV)">
+                    @nv.TenNV
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Nhà cung cấp</label>
+        <select asp-for="MaNCC" class="form-control">
+            @foreach (var ncc in ViewBag.NCC)
+            {
+                <option value="@ncc.MaNCC" selected="@(ncc.MaNCC == Model.MaNCC)">
+                    @ncc.TenNCC
+                </option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Lưu thay đổi</button>
+    <a asp-action="Index" class="btn btn-secondary mt-2">Quay lại</a>
+
+</form>

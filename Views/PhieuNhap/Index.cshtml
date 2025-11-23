@@ -1,0 +1,42 @@
+﻿@model IEnumerable<QLKhoHang.Models.PhieuNhap>
+
+<h2>Danh sách Phiếu Nhập</h2>
+
+<a asp-action="Create" class="btn btn-success mb-2">➕ Tạo Phiếu Nhập</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Mã PN</th>
+            <th>Ngày nhập</th>
+            <th>Nhân Viên</th>
+            <th>Nhà Cung Cấp</th>
+            <th>Chức năng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaPN</td>
+                <td>@item.NgayNhap.ToString("dd/MM/yyyy")</td>
+                <td>@item.NhanVien?.TenNV</td>
+                <td>@item.NhaCungCap?.TenNCC</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.MaPN" class="btn btn-info btn-sm">
+                        Chi tiết
+                    </a>
+
+                    <a asp-action="Edit" asp-route-id="@item.MaPN" class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a asp-action="Delete" asp-route-id="@item.MaPN" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xóa @item.MaPN không?');">
+                        Xóa
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
