@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QLKhoHang.Data;
 using QLKhoHang.Models;
@@ -6,6 +7,7 @@ using System.Linq;
 
 namespace QLKhoHang.Controllers
 {
+    [Authorize(Roles = "Admin,NhanVienKho,KeToan")]
     public class PhieuXuatController : Controller
     {
         private readonly QLKhoHangContext _context;
@@ -101,6 +103,47 @@ namespace QLKhoHang.Controllers
         // ==========================
         // Details (show header + CTs + form add CT)
         // ==========================
+        public IActionResult EditDetail(string maPX, string maHang)
+        {
+            var ct = _context.CT_PhieuXuat
+                .Include(c => c.HangHoa)
+                .FirstOrDefault(c => c.MaPX == maPX && c.MaHang == maHang);
+
+            if (ct == null)
+                return NotFound();
+
+            return View(ct);
+        }
+        [HttpPost]
+        public IActionResult EditDetail(string MaPX, string MaHang, int SoLuong, decimal DonGiaXuat)
+        {
+            var ct = _context.CT_PhieuXuat
+                .FirstOrDefault(c => c.MaPX == MaPX && c.MaHang == MaHang);
+
+            if (ct == null)
+                return NotFound();
+
+            // Lưu giá trị cũ
+            var oldSL = ct.SoLuong;
+            var oldDG = ct.DonGiaXuat;
+
+            // Cập nhật
+            ct.SoLuong = SoLuong;
+            ct.DonGiaXuat = DonGiaXuat;
+
+            _context.SaveChanges();
+
+            // Ghi lịch sử chỉnh sửa (tùy chọn)
+            SaveHistory(MaPX, "Sửa chi tiết",
+                $"SL:{oldSL}, ĐG:{oldDG}",
+                $"SL:{SoLuong}, ĐG:{DonGiaXuat}",
+                "Admin");
+
+            TempData["Message"] = "Đã cập nhật chi tiết thành công!";
+            return RedirectToAction("Details", new { id = MaPX });
+        }
+
+
         public IActionResult Details(string id)
         {
             if (string.IsNullOrEmpty(id)) return NotFound();
@@ -114,9 +157,118 @@ namespace QLKhoHang.Controllers
 
             if (px == null) return NotFound();
 
+            // Load danh sách hàng hóa cho dropdown thêm chi tiết
             ViewBag.HangHoa = _context.HangHoa.ToList();
+
+            // Load lịch sử chỉnh sửa phiếu xuất
+            ViewBag.LichSu = _context.LichSuSuaPhieu
+                .Where(ls => ls.MaPhieu == id && ls.LoaiPhieu == "Xuat")
+                .OrderByDescending(ls => ls.ThoiGian)
+                .ToList();
+
             return View(px);
         }
+
+        // ==========================
+        // GET: Edit (sửa phiếu xuất)
+        // ==========================
+        public IActionResult Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+
+            var px = _context.PhieuXuat.Find(id);
+            if (px == null)
+                return NotFound();
+
+            // load dropdowns nhân viên và khách hàng
+            ViewBag.NhanVien = _context.NhanVien.ToList();
+            ViewBag.KhachHang = _context.KhachHang.ToList();
+
+            return View(px);
+        }
+
+        // ==========================
+        // POST: Edit (sửa phiếu xuất)
+        // ==========================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(PhieuXuat px)
+        {
+            // Remove validation của navigation/collection properties
+            ModelState.Remove("CT_PhieuXuat");
+            ModelState.Remove("NhanVien");
+            ModelState.Remove("KhachHang");
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var old = _context.PhieuXuat.AsNoTracking().FirstOrDefault(x => x.MaPX == px.MaPX);
+                    if (old == null)
+                    {
+                        ModelState.AddModelError("", "Phiếu xuất không tồn tại!");
+                        ViewBag.NhanVien = _context.NhanVien.ToList();
+                        ViewBag.KhachHang = _context.KhachHang.ToList();
+                        return View(px);
+                    }
+
+                    // Nếu muốn lưu lịch sử sửa, ví dụ ngày xuất, nhân viên, khách hàng
+                    if (old.NgayXuat != px.NgayXuat)
+                    {
+                        SaveHistory(px.MaPX, "Ngày xuất", old.NgayXuat.ToString("yyyy-MM-dd"), px.NgayXuat.ToString("yyyy-MM-dd"));
+                    }
+                    if (old.MaNV != px.MaNV)
+                    {
+                        SaveHistory(px.MaPX, "Nhân viên", old.MaNV, px.MaNV);
+                    }
+                    if (old.MaKH != px.MaKH)
+                    {
+                        SaveHistory(px.MaPX, "Khách hàng", old.MaKH, px.MaKH);
+                    }
+
+                    // cập nhật dữ liệu
+                    _context.PhieuXuat.Update(px);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Details", new { id = px.MaPX });
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi cập nhật: " + ex.Message);
+                }
+            }
+
+            // nếu invalid, load lại dropdowns
+            ViewBag.NhanVien = _context.NhanVien.ToList();
+            ViewBag.KhachHang = _context.KhachHang.ToList();
+            return View(px);
+        }
+
+        // ==========================
+        // Hàm lưu lịch sử sửa phiếu xuất (nếu muốn)
+        // ==========================
+        private void SaveHistory(string maPX, string field, string oldValue, string newValue, string user = null)
+        {
+            // Nếu user không truyền vào thì dùng tên máy
+            if (string.IsNullOrEmpty(user))
+                user = Environment.UserName ?? "UnknownUser";
+
+            var history = new LichSuSuaPhieu
+            {
+                MaPhieu = maPX,
+                LoaiPhieu = "Xuat",
+                TruongSua = field,
+                GiaTriCu = oldValue,
+                GiaTriMoi = newValue,
+                ThoiGian = DateTime.Now,
+                NguoiSua = user
+            };
+
+            _context.LichSuSuaPhieu.Add(history);
+            _context.SaveChanges();
+        }
+
 
         // ==========================
         // POST: AddDetail (thêm 1 dòng CT_PhieuXuat)
@@ -253,5 +405,6 @@ namespace QLKhoHang.Controllers
 
             return RedirectToAction("Index");
         }
+
     }
 }

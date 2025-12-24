@@ -1,33 +1,98 @@
 ﻿@model IEnumerable<QLKhoHang.Models.KhachHang>
 
-<h2>Danh sách Khách Hàng</h2>
+@{
+    ViewData["Title"] = "Danh sách Khách Hàng";
+}
 
-<a asp-action="Create" class="btn btn-success mb-3">➕ Thêm khách hàng</a>
+<div class="page-header fade-in">
+    <h2><i class="bi bi-person"></i> Danh sách Khách Hàng</h2>
+    <p class="subtitle">Quản lý thông tin khách hàng và lịch sử giao dịch</p>
+</div>
 
-<table class="table table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>Mã KH</th>
-            <th>Tên KH</th>
-            <th>SDT</th>
-            <th>Địa chỉ</th>
-            <th>Chức năng</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var kh in Model)
-        {
-            <tr>
-                <td>@kh.MaKH</td>
-                <td>@kh.TenKH</td>
-                <td>@kh.SDT</td>
-                <td>@kh.DiaChi</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@kh.MaKH" class="btn btn-info btn-sm">Chi tiết</a>
-                    <a asp-action="Edit" asp-route-id="@kh.MaKH" class="btn btn-warning btn-sm">Sửa</a>
-                    <a asp-action="Delete" asp-route-id="@kh.MaKH" class="btn btn-danger btn-sm">Xóa</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card-glass metric-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="mb-0 fw-bold">Khách hàng</h5>
+            <div class="text-muted small">Tổng số: @Model.Count() khách hàng</div>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <form class="d-flex" method="get">
+                <input name="q" value="@ViewBag.SearchString" 
+                       class="form-control form-control-sm" 
+                       placeholder="Tìm tên hoặc sđt" 
+                       style="width:220px" />
+                <button class="btn btn-outline-secondary btn-sm btn-animated ms-2" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+            <a asp-action="Create" class="btn btn-primary btn-modern">
+                <i class="bi bi-person-plus me-2"></i>Thêm Khách Hàng
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table-modern table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="text-center">Mã KH</th>
+                    <th>Tên KH</th>
+                    <th>SĐT</th>
+                    <th>Địa chỉ</th>
+                    <th class="text-center" width="200">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var kh in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <span class="badge bg-primary">@kh.MaKH</span>
+                            </td>
+                            <td>
+                                <i class="bi bi-person text-muted"></i>
+                                <strong>@kh.TenKH</strong>
+                            </td>
+                            <td>
+                                <i class="bi bi-telephone text-muted"></i>
+                                @kh.SDT
+                            </td>
+                            <td>
+                                <i class="bi bi-geo-alt text-muted"></i>
+                                @kh.DiaChi
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@kh.MaKH" 
+                                       class="btn btn-sm btn-info btn-animated" title="Chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@kh.MaKH" 
+                                       class="btn btn-sm btn-warning btn-animated" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@kh.MaKH" 
+                                       class="btn btn-sm btn-danger btn-animated" title="Xóa"
+                                       onclick="return confirm('Bạn có chắc muốn xóa khách hàng @kh.TenKH không?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p class="mt-3">Không tìm thấy kết quả nào</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+@inherits Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
+@{
+    Layout = null; /* This is a wrapper partial — used as top-level in pages via @{ Html.RenderPartial("_CrudPanel"); } or as a layout for a view */
+}
+<div class="crud-card card-glass metric-card mb-4 fade-in">
+    <div class="card-header border-0 d-flex align-items-center justify-content-between" style="background:transparent;padding:14px 18px 8px 18px">
+        <div class="d-flex flex-column">
+            <div class="d-flex align-items-center gap-3">
+                <h5 class="mb-0">@ViewData["Title"]</h5>
+                @if(ViewBag.Subtitle != null) { <small class="text-muted">@ViewBag.Subtitle</small> }
+            </div>
+            @if(ViewBag.Breadcrumb != null) {
+                <small class="text-muted">@ViewBag.Breadcrumb</small>
+            }
+        </div>
+        <div>
+            <partial name="_CrudActions" />
+        </div>
+    </div>
+    <div class="card-body pt-2">
+        @RenderSection("CrudBody", required: false)
+        @RenderBody()
+    </div>
+</div>

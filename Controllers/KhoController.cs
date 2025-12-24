@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QLKhoHang.Models;
 using QLKhoHang.Repositories;
-using Quản_lý_kho_hàng.Models;
 using System.Threading.Tasks;
 
 namespace QLKhoHang.Controllers
 {
+    [Authorize(Roles = "Admin,NhanVienKho")]
     public class KhoController : Controller
     {
         private readonly IKhoRepository _khoRepo;

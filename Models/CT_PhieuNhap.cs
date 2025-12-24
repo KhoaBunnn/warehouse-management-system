@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace QLKhoHang.Models
 {
@@ -10,6 +11,7 @@ namespace QLKhoHang.Models
         public string MaPN { get; set; }
 
         [ForeignKey("MaPN")]
+        [ValidateNever]   // ❗ Không validate navigation
         public PhieuNhap PhieuNhap { get; set; }
 
         [StringLength(10)]
@@ -17,6 +19,7 @@ namespace QLKhoHang.Models
         public string MaHang { get; set; }
 
         [ForeignKey("MaHang")]
+        [ValidateNever]   // ❗ Không validate navigation
         public HangHoa HangHoa { get; set; }
 
         public int SoLuong { get; set; }

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+
+<h2>Danh sách tài khoản</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Phân quyền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    <a href="/AdminUser/Edit/@user.Id" class="btn btn-primary">Phân quyền</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

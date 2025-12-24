@@ -1,0 +1,174 @@
+@inherits Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
+@{
+    var success = TempData["Success"] as string;
+    var error = TempData["Error"] as string;
+    var info = TempData["Info"] as string;
+    var warning = TempData["Warning"] as string;
+}
+
+<style>
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+    }
+
+    .toast-modern {
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        border: none;
+        overflow: hidden;
+        margin-bottom: 12px;
+        animation: slideInRight 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        backdrop-filter: blur(10px);
+    }
+
+    .toast-modern.success {
+        background: linear-gradient(135deg, #00bfa6 0%, #00a693 100%);
+    }
+
+    .toast-modern.error {
+        background: linear-gradient(135deg, #f5576c 0%, #e63950 100%);
+    }
+
+    .toast-modern.info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .toast-modern.warning {
+        background: linear-gradient(135deg, #fad961 0%, #f76b1c 100%);
+    }
+
+    .toast-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.2);
+        margin-right: 12px;
+        font-size: 20px;
+    }
+
+    .toast-body-modern {
+        flex: 1;
+        padding: 12px 0;
+    }
+
+    .toast-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+    }
+
+    .toast-message {
+        font-size: 0.875rem;
+        opacity: 0.95;
+    }
+
+    @@keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+
+    .toast-modern.hiding {
+        animation: slideOutRight 0.3s ease-out forwards;
+    }
+</style>
+
+<div aria-live="polite" aria-atomic="true" class="toast-container">
+    @if(!string.IsNullOrEmpty(success)){
+        <div class="toast toast-modern success align-items-center text-white border-0" role="alert" data-bs-delay="4000" data-bs-autohide="true">
+            <div class="d-flex align-items-center p-3">
+                <div class="toast-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div class="toast-body-modern">
+                    <div class="toast-title">Thành công!</div>
+                    <div class="toast-message">@success</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+    @if(!string.IsNullOrEmpty(error)){
+        <div class="toast toast-modern error align-items-center text-white border-0" role="alert" data-bs-delay="5000" data-bs-autohide="true">
+            <div class="d-flex align-items-center p-3">
+                <div class="toast-icon">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div class="toast-body-modern">
+                    <div class="toast-title">Lỗi!</div>
+                    <div class="toast-message">@error</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+    @if(!string.IsNullOrEmpty(info)){
+        <div class="toast toast-modern info align-items-center text-white border-0" role="alert" data-bs-delay="4000" data-bs-autohide="true">
+            <div class="d-flex align-items-center p-3">
+                <div class="toast-icon">
+                    <i class="bi bi-info-circle-fill"></i>
+                </div>
+                <div class="toast-body-modern">
+                    <div class="toast-title">Thông tin</div>
+                    <div class="toast-message">@info</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+    @if(!string.IsNullOrEmpty(warning)){
+        <div class="toast toast-modern warning align-items-center text-white border-0" role="alert" data-bs-delay="4500" data-bs-autohide="true">
+            <div class="d-flex align-items-center p-3">
+                <div class="toast-icon">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                </div>
+                <div class="toast-body-modern">
+                    <div class="toast-title">Cảnh báo</div>
+                    <div class="toast-message">@warning</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    (function(){
+        var toasts = document.querySelectorAll('.toast-modern');
+        toasts.forEach(function(t){
+            var bs = new bootstrap.Toast(t, {
+                animation: true,
+                autohide: true
+            });
+            
+            t.addEventListener('hide.bs.toast', function() {
+                t.classList.add('hiding');
+            });
+            
+            bs.show();
+        });
+    })();
+</script>

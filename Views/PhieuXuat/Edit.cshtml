@@ -1,0 +1,51 @@
+﻿@model QLKhoHang.Models.PhieuXuat
+
+@{
+    ViewData["Title"] = "Sửa Phiếu Xuất";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="card p-4">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="MaPX" />
+
+        <div class="mb-3">
+            <label asp-for="MaPX" class="form-label">Mã Phiếu</label>
+            <input asp-for="MaPX" class="form-control" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="NgayXuat" class="form-label">Ngày Xuất</label>
+            <input asp-for="NgayXuat" class="form-control" type="datetime-local" value="@Model.NgayXuat.ToString("yyyy-MM-ddTHH:mm")" />
+            <span asp-validation-for="NgayXuat" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MaNV" class="form-label">Nhân Viên</label>
+            <select asp-for="MaNV" class="form-select" asp-items="@(new SelectList(ViewBag.NhanVien, "MaNV", "TenNV", Model.MaNV))">
+                <option value="">-- Chọn nhân viên --</option>
+            </select>
+            <span asp-validation-for="MaNV" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MaKH" class="form-label">Khách Hàng</label>
+            <select asp-for="MaKH" class="form-select" asp-items="@(new SelectList(ViewBag.KhachHang, "MaKH", "TenKH", Model.MaKH))">
+                <option value="">-- Chọn khách hàng --</option>
+            </select>
+            <span asp-validation-for="MaKH" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            <a asp-action="Details" asp-route-id="@Model.MaPX" class="btn btn-secondary">Hủy</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

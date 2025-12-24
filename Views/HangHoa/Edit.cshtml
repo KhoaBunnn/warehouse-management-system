@@ -1,0 +1,75 @@
+@model QLKhoHang.Models.ViewModels.HangHoaBaseViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa hàng hóa";
+}
+
+<div class="card-glass metric-card mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+            <h5 class="mb-0">Chỉnh sửa hàng hóa</h5>
+            <small class="text-muted">Cập nhật thông tin hàng hóa</small>
+        </div>
+        <div>
+            <partial name="_CrudActions" />
+        </div>
+    </div>
+    <div class="card-body pt-2">
+        <form id="mainForm" asp-action="Edit" method="post">
+
+            @Html.HiddenFor(m => m.MaHang)
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label>Tên hàng</label>
+                        @Html.TextBoxFor(m => m.TenHang, new { @class = "form-control" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Đơn vị tính</label>
+                        @Html.TextBoxFor(m => m.DonViTinh, new { @class = "form-control" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Số lượng tồn</label>
+                        @Html.TextBoxFor(m => m.SoLuongTon, new { @class = "form-control", type = "number" })
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label>Giá nhập</label>
+                        @Html.TextBoxFor(m => m.GiaNhap, new { @class = "form-control", type = "number", step = "0.01" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Giá xuất</label>
+                        @Html.TextBoxFor(m => m.GiaXuat, new { @class = "form-control", type = "number", step = "0.01" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Loại hàng</label>
+                        @Html.DropDownListFor(m => m.MaLoai,
+                        new SelectList(Model.LoaiHangList, "Value", "Text"),
+                                            new { @class = "form-select" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Kho</label>
+                        @Html.DropDownListFor(m => m.MaKho,
+                                            new SelectList(Model.KhoList, "Value", "Text"),
+                                            new { @class = "form-select" })
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-animated">Hủy</a>
+                <button type="submit" class="btn btn-warning btn-animated">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>

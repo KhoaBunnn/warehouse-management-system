@@ -3,87 +3,304 @@
 @{
     ViewData["Title"] = "Chi tiết phiếu nhập";
     var tongTien = 0M;
+    var lichSu = ViewBag.LichSu as List<QLKhoHang.Models.LichSuSuaPhieu>;
 }
 
-<h2 class="mb-4">📄 Chi tiết phiếu nhập</h2>
+<style>
+    .detail-header-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 24px;
+        color: white;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        margin-bottom: 24px;
+    }
 
-<div class="card p-3 mb-4">
-    <p><strong>Mã phiếu:</strong> @Model.MaPN</p>
-    <p><strong>Ngày nhập:</strong> @Model.NgayNhap.ToString("dd/MM/yyyy")</p>
-    <p><strong>Nhân viên:</strong> @Model.NhanVien?.TenNV</p>
-    <p><strong>Nhà cung cấp:</strong> @Model.NhaCungCap?.TenNCC</p>
+    .info-badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 16px;
+        border-radius: 8px;
+        display: inline-block;
+        margin: 4px 8px 4px 0;
+        backdrop-filter: blur(10px);
+    }
+
+    .info-badge strong {
+        color: #ffd700;
+        margin-right: 8px;
+    }
+
+    .action-bar {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        padding: 16px 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(245, 87, 108, 0.2);
+    }
+
+    .btn-modern {
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .table-modern {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+    }
+
+    .table-modern thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .table-modern thead th {
+        border: none;
+        padding: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table-modern tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .table-modern tbody tr:hover {
+        background: #f8f9ff;
+        transform: scale(1.01);
+    }
+
+    .table-modern tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .table-modern tfoot {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        font-weight: 700;
+    }
+
+    .table-modern tfoot th {
+        border: none;
+        padding: 20px 16px;
+        font-size: 1.1rem;
+    }
+
+    .history-section {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-top: 24px;
+    }
+
+    .history-section h4 {
+        color: #667eea;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .btn-action-sm {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        margin: 0 2px;
+    }
+</style>
+
+<div class="detail-header-card">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h3 class="mb-0" style="font-weight: 700;">
+                <i class="bi bi-file-earmark-text"></i> Phiếu nhập #@Model.MaPN
+            </h3>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Chi tiết thông tin phiếu nhập hàng</p>
+        </div>
+        <a asp-action="Edit" asp-route-id="@Model.MaPN" class="btn btn-light btn-modern">
+            <i class="bi bi-pencil-square"></i> Sửa phiếu
+        </a>
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="info-badge">
+                <strong><i class="bi bi-calendar3"></i> Ngày nhập:</strong>
+                @Model.NgayNhap.ToString("dd/MM/yyyy")
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="info-badge">
+                <strong><i class="bi bi-person"></i> Nhân viên:</strong>
+                @Model.NhanVien?.TenNV
+            </div>
+        </div>
+        <div class="col-md-12 mt-2">
+            <div class="info-badge">
+                <strong><i class="bi bi-building"></i> Nhà cung cấp:</strong>
+                @Model.NhaCungCap?.TenNCC
+            </div>
+        </div>
+    </div>
 </div>
 
-<a asp-action="Create"
-   asp-controller="CT_PhieuNhap"
-   asp-route-id="@Model.MaPN"
-   class="btn btn-success mb-3">
-    ➕ Thêm chi tiết
-</a>
+<div class="action-bar">
+    <h5 class="mb-0 text-white" style="font-weight: 600;">
+        <i class="bi bi-list-ul"></i> Danh sách hàng hóa
+    </h5>
+    <a asp-action="Create"
+       asp-controller="CT_PhieuNhap"
+       asp-route-id="@Model.MaPN"
+       class="btn btn-light btn-modern">
+        <i class="bi bi-plus-circle"></i> Thêm chi tiết
+    </a>
+</div>
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark text-center">
-        <tr>
-            <th>Mã hàng</th>
-            <th>Tên hàng</th>
-            <th>Số lượng</th>
-            <th>Đơn giá nhập</th>
-            <th>Thành tiền</th>
-            <th width="100">Thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.CT_PhieuNhap != null && Model.CT_PhieuNhap.Any())
-        {
-            foreach (var ct in Model.CT_PhieuNhap)
+<div class="table-modern">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th class="text-center">Mã hàng</th>
+                <th>Tên hàng</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-end">Đơn giá nhập</th>
+                <th class="text-end">Thành tiền</th>
+                <th class="text-center" width="150">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.CT_PhieuNhap != null && Model.CT_PhieuNhap.Any())
             {
-                var thanhTien = ct.SoLuong * ct.DonGiaNhap;
-                tongTien += thanhTien;
-
+                foreach (var ct in Model.CT_PhieuNhap)
+                {
+                    var thanhTien = ct.SoLuong * ct.DonGiaNhap;
+                    tongTien += thanhTien;
+                    <tr>
+                        <td class="text-center">
+                            <span class="badge bg-primary">@ct.MaHang</span>
+                        </td>
+                        <td>
+                            <strong>@ct.HangHoa?.TenHang</strong>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-info text-dark">@ct.SoLuong</span>
+                        </td>
+                        <td class="text-end">@ct.DonGiaNhap.ToString("N0") ₫</td>
+                        <td class="text-end">
+                            <strong style="color: #667eea;">@thanhTien.ToString("N0") ₫</strong>
+                        </td>
+                        <td class="text-center">
+                            <a asp-controller="CT_PhieuNhap"
+                               asp-action="Edit"
+                               asp-route-maPN="@ct.MaPN"
+                               asp-route-maHang="@ct.MaHang"
+                               class="btn btn-primary btn-action-sm">
+                                <i class="bi bi-pencil"></i> Sửa
+                            </a>
+                            <form asp-controller="CT_PhieuNhap"
+                                  asp-action="Delete"
+                                  method="post"
+                                  onsubmit="return confirm('Xóa hàng này khỏi phiếu nhập?');"
+                                  style="display:inline-block">
+                                <input type="hidden" name="maPN" value="@ct.MaPN" />
+                                <input type="hidden" name="maHang" value="@ct.MaHang" />
+                                <button type="submit" class="btn btn-danger btn-action-sm">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
                 <tr>
-                    <td>@ct.MaHang</td>
-                    <td>@ct.HangHoa?.TenHang</td>
-                    <td class="text-center">@ct.SoLuong</td>
-                    <td class="text-end">@ct.DonGiaNhap.ToString("N0")</td>
-                    <td class="text-end">@thanhTien.ToString("N0")</td>
-                    <td class="text-center">
-
-                        <form asp-controller="CT_PhieuNhap"
-                              asp-action="Delete"
-                              method="post"
-                              onsubmit="return confirm('Xóa hàng này khỏi phiếu nhập?');">
-
-                            <input type="hidden" name="maPN" value="@ct.MaPN" />
-                            <input type="hidden" name="maHang" value="@ct.MaHang" />
-
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                Xóa
-                            </button>
-                        </form>
-
+                    <td colspan="6" class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p class="mt-3">Chưa có chi tiết hàng hóa</p>
                     </td>
                 </tr>
             }
-        }
-        else
-        {
+        </tbody>
+        <tfoot>
             <tr>
-                <td colspan="6" class="text-center text-muted">
-                    Chưa có chi tiết
-                </td>
+                <th colspan="4" class="text-end">TỔNG TIỀN</th>
+                <th class="text-end" style="font-size: 1.2rem;">@tongTien.ToString("N0") ₫</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
+        </tfoot>
+    </table>
+</div>
 
-    <tfoot class="table-secondary">
-        <tr>
-            <th colspan="4" class="text-end">TỔNG TIỀN</th>
-            <th class="text-end">
-                @tongTien.ToString("N0") VNĐ
-            </th>
-            <th></th>
-        </tr>
-    </tfoot>
-</table>
+<div class="history-section">
+    <h4><i class="bi bi-clock-history"></i> Lịch sử chỉnh sửa</h4>
+    @if (lichSu != null && lichSu.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Trường sửa</th>
+                        <th>Giá trị cũ</th>
+                        <th>Giá trị mới</th>
+                        <th>Người sửa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var h in lichSu)
+                    {
+                        <tr>
+                            <td>@h.ThoiGian.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td><span class="badge bg-warning text-dark">@h.TruongSua</span></td>
+                            <td><span class="text-danger">@h.GiaTriCu</span></td>
+                            <td><span class="text-success">@h.GiaTriMoi</span></td>
+                            <td>@h.NguoiSua</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-info-circle"></i>
+            <p class="mt-3">Chưa có lịch sử chỉnh sửa</p>
+        </div>
+    }
+</div>
 
-<a asp-action="Index" class="btn btn-secondary mt-3">🔙 Quay lại danh sách</a>
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary btn-modern">
+        <i class="bi bi-arrow-left"></i> Quay lại danh sách
+    </a>
+</div>

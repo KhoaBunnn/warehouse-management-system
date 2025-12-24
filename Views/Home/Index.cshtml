@@ -1,102 +1,295 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model QLKhoHang.Models.HomeDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="container mt-5">
-    <h2 class="mb-4 text-center fw-bold">Quản lý kho hàng</h2>
+<style>
+    .stat-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        height: 100%;
+        border-left: 4px solid;
+        animation: scaleIn 0.5s ease-out;
+    }
 
-    <div class="row g-4 justify-content-center">
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
 
-        <!-- Kho -->
-        <div class="col-md-3">
-            <div class="card text-white bg-primary shadow h-100 rounded-4 home-card">
-                <div class="card-body text-center">
-                    <div style="font-size:40px;">📦</div>
-                    <h5 class="card-title mt-2">Kho</h5>
-                    <p class="card-text">Xem danh sách kho, thêm mới kho, sửa hoặc xóa kho.</p>
-                    <a asp-controller="Kho" asp-action="Index" class="btn btn-light rounded-pill px-4">Đi tới Kho</a>
-                </div>
-            </div>
-        </div>
+    .stat-card.primary { border-left-color: #667eea; }
+    .stat-card.success { border-left-color: #00bfa6; }
+    .stat-card.warning { border-left-color: #f59e0b; }
+    .stat-card.danger { border-left-color: #f5576c; }
+    .stat-card.info { border-left-color: #2b9edb; }
 
-        <!-- Hàng hóa -->
-        <div class="col-md-3">
-            <div class="card text-white bg-success shadow h-100 rounded-4 home-card">
-                <div class="card-body text-center">
-                    <div style="font-size:40px;">🛒</div>
-                    <h5 class="card-title mt-2">Hàng hóa</h5>
-                    <p class="card-text">Quản lý danh sách hàng hóa, thêm, sửa, xóa sản phẩm.</p>
-                    <a asp-controller="HangHoa" asp-action="Index" class="btn btn-light rounded-pill px-4">Đi tới Hàng hóa</a>
-                </div>
-            </div>
-        </div>
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 16px;
+    }
 
-        <!-- Nhân viên -->
-        <div class="col-md-3">
-            <div class="card text-white bg-info shadow h-100 rounded-4 home-card">
-                <div class="card-body text-center">
-                    <div style="font-size:40px;">👨‍💼</div>
-                    <h5 class="card-title mt-2">Nhân viên</h5>
-                    <p class="card-text">Quản lý danh sách nhân viên, thêm, sửa, xóa nhân viên.</p>
-                    <a asp-controller="NhanVien" asp-action="Index" class="btn btn-light rounded-pill px-4">Đi tới Nhân viên</a>
-                </div>
-            </div>
-        </div>
-        <!-- Phiếu Nhập / Xuất -->
-        <div class="col-md-4">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-body">
-                    <h4 class="card-title">Phiếu</h4>
-                    <p class="card-text">Quản lý phiếu nhập và phiếu xuất</p>
-                    <a href="/PhieuNhap" class="btn btn-light">Phiếu Nhập</a>
-                    <a href="/PhieuXuat" class="btn btn-light">Phiếu Xuất</a>
-                </div>
-            </div>
-        </div>
-        <!-- Nhà cung cấp -->
-        <div class="col-4">
-            <div class="card bg-warning p-4">
-                <h3>Nhà cung cấp</h3>
-                <p>Xem danh sách, thêm, sửa, xóa nhà cung cấp.</p>
-                <a class="btn btn-dark" href="/NhaCungCap">Đi tới Nhà cung cấp</a>
-            </div>
-        </div>
+    .stat-card.primary .stat-icon { background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); color: #667eea; }
+    .stat-card.success .stat-icon { background: linear-gradient(135deg, rgba(0, 191, 166, 0.1), rgba(0, 143, 122, 0.1)); color: #00bfa6; }
+    .stat-card.warning .stat-icon { background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(247, 107, 28, 0.1)); color: #f59e0b; }
+    .stat-card.danger .stat-icon { background: linear-gradient(135deg, rgba(245, 87, 108, 0.1), rgba(230, 57, 80, 0.1)); color: #f5576c; }
+    .stat-card.info .stat-icon { background: linear-gradient(135deg, rgba(43, 158, 219, 0.1), rgba(30, 123, 168, 0.1)); color: #2b9edb; }
 
-        <!-- Báo cáo -->
-        <div class="col-md-3">
-            <div class="card text-dark bg-warning shadow h-100 rounded-4 home-card">
-                <div class="card-body text-center">
-                    <div style="font-size:40px;">📊</div>
-                    <h5 class="card-title mt-2">Báo cáo</h5>
-                    <p class="card-text">Xem báo cáo tồn kho, doanh số, thống kê sản phẩm.</p>
-                    <a asp-controller="BaoCao" asp-action="Index" class="btn btn-dark rounded-pill px-4">Đi tới Báo cáo</a>
-                </div>
-            </div>
-        </div>
-        <!-- Khách Hàng -->
-        <div class="col-md-3">
-            <div class="card text-white bg-danger shadow h-100 rounded-4 home-card">
-                <div class="card-body text-center">
-                    <div style="font-size:40px;">👥</div>
-                    <h5 class="card-title mt-2">Khách Hàng</h5>
-                    <p class="card-text">Quản lý thông tin khách hàng, thêm mới, cập nhật hoặc xóa.</p>
-                    <a asp-controller="KhachHang" asp-action="Index" class="btn btn-light rounded-pill px-4">
-                        Đi tới Khách Hàng
-                    </a>
-                </div>
-            </div>
-        </div>
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+    }
 
+    .stat-label {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
 
+    .chart-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 24px;
+        animation: fadeIn 0.6s ease-out;
+    }
+</style>
+
+<div class="page-header fade-in">
+    <h2><i class="bi bi-speedometer2"></i> Dashboard Quản lý kho</h2>
+    <p class="subtitle">Tổng quan hệ thống quản lý kho hàng</p>
+</div>
+
+<!-- Thống kê tổng quan -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card primary scale-in" style="animation-delay: 0.1s;">
+            <div class="stat-icon">
+                <i class="bi bi-box"></i>
+            </div>
+            <div class="stat-value">@Model.TotalProducts</div>
+            <div class="stat-label">Tổng sản phẩm</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card success scale-in" style="animation-delay: 0.2s;">
+            <div class="stat-icon">
+                <i class="bi bi-arrow-down-square"></i>
+            </div>
+            <div class="stat-value">@Model.TotalPhieuNhap</div>
+            <div class="stat-label">Phiếu nhập</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card warning scale-in" style="animation-delay: 0.3s;">
+            <div class="stat-icon">
+                <i class="bi bi-arrow-up-square"></i>
+            </div>
+            <div class="stat-value">@Model.TotalPhieuXuat</div>
+            <div class="stat-label">Phiếu xuất</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card danger scale-in" style="animation-delay: 0.4s;">
+            <div class="stat-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div class="stat-value">@Model.LowStockCount</div>
+            <div class="stat-label">Hàng sắp hết</div>
+        </div>
     </div>
 </div>
 
-<style>
-    .home-card {
-        transition: transform .2s ease, box-shadow .2s ease;
-    }
-    .home-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-    }
-</style>
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card info scale-in" style="animation-delay: 0.5s;">
+            <div class="stat-icon">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="stat-value">@Model.TodayRevenue.ToString("N0")</div>
+            <div class="stat-label">Doanh thu hôm nay (₫)</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card success scale-in" style="animation-delay: 0.6s;">
+            <div class="stat-icon">
+                <i class="bi bi-box-arrow-down"></i>
+            </div>
+            <div class="stat-value">@Model.TodayNhapQty</div>
+            <div class="stat-label">Số lượng nhập hôm nay</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card warning scale-in" style="animation-delay: 0.7s;">
+            <div class="stat-icon">
+                <i class="bi bi-box-arrow-up"></i>
+            </div>
+            <div class="stat-value">@Model.TodayXuatQty</div>
+            <div class="stat-label">Số lượng xuất hôm nay</div>
+        </div>
+    </div>
+</div>
+
+<!-- Biểu đồ và thống kê chi tiết -->
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="chart-card">
+            <h5 class="mb-4 fw-bold"><i class="bi bi-bar-chart"></i> Biểu đồ nhập/xuất 7 ngày qua</h5>
+            <canvas id="nhapXuatChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="chart-card">
+            <h5 class="mb-4 fw-bold"><i class="bi bi-pie-chart"></i> Tồn kho theo loại</h5>
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Top sản phẩm và giao dịch gần đây -->
+<div class="row g-4 mt-2">
+    <div class="col-md-6">
+        <div class="chart-card">
+            <h5 class="mb-4 fw-bold"><i class="bi bi-trophy"></i> Top 5 sản phẩm bán chạy (30 ngày)</h5>
+            @if (Model.TopProducts != null && Model.TopProducts.Any())
+            {
+                <div class="list-group">
+                    @foreach (var (product, index) in Model.TopProducts.Select((p, i) => (p, i)))
+                    {
+                        <div class="list-group-item border-0 px-0 py-3" style="animation-delay: @(index * 0.1)s;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-primary me-3" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">@(index + 1)</span>
+                                    <div>
+                                        <div class="fw-semibold">@product.TenHang</div>
+                                        <small class="text-muted">Đã bán: @product.SoLuongBan sản phẩm</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted text-center py-4">Chưa có dữ liệu</p>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="chart-card">
+            <h5 class="mb-4 fw-bold"><i class="bi bi-clock-history"></i> Giao dịch gần đây</h5>
+            @if (Model.RecentTransactions != null && Model.RecentTransactions.Any())
+            {
+                <div class="list-group">
+                    @foreach (var (id, type, qty) in Model.RecentTransactions)
+                    {
+                        <div class="list-group-item border-0 px-0 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge @(type == "Nhập" ? "bg-success" : "bg-danger") me-2">@type</span>
+                                    <span class="fw-semibold">@id</span>
+                                </div>
+                                <span class="text-muted">@qty sản phẩm</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted text-center py-4">Chưa có giao dịch</p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Biểu đồ nhập/xuất
+        const nhapXuatCtx = document.getElementById('nhapXuatChart').getContext('2d');
+        new Chart(nhapXuatCtx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.ChartLabels)),
+                datasets: [{
+                    label: 'Nhập',
+                    data: @Html.Raw(Json.Serialize(Model.ChartNhapCounts)),
+                    borderColor: '#00bfa6',
+                    backgroundColor: 'rgba(0, 191, 166, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Xuất',
+                    data: @Html.Raw(Json.Serialize(Model.ChartXuatCounts)),
+                    borderColor: '#f5576c',
+                    backgroundColor: 'rgba(245, 87, 108, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Biểu đồ tồn kho theo loại
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.CategoryLabels)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.CategoryValues)),
+                    backgroundColor: [
+                        '#667eea',
+                        '#00bfa6',
+                        '#f59e0b',
+                        '#f5576c',
+                        '#2b9edb',
+                        '#764ba2'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+    </script>
+}

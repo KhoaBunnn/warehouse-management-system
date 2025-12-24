@@ -1,49 +1,339 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@{
+    var title = ViewData["Title"] ?? "E-Warehouse";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Quản_lý_kho_hàng</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Quản_lý_kho_hàng.styles.css" asp-append-version="true" />
+    <title>@title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom App Styles -->
+    <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #f7fbff;
+            --text: #073047;
+            --text-dark: #04243a;
+            --panel: rgba(6,30,48,0.04);
+            --glass-bg: #ffffff;
+            --primary: #2b9edb;
+            --accent: #00bfa6;
+            --cta: #f59e0b;
+            --muted: rgba(6,40,61,0.55);
+            --radius-lg: 14px;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar-pro {
+            width: 260px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            padding: 28px 18px;
+            background: linear-gradient(180deg,#ffffff,#f3fbff);
+            border-right: 1px solid rgba(6,30,48,0.05);
+            box-shadow: 0 8px 28px rgba(6,30,48,0.04);
+            transition: width .28s ease;
+            z-index: 1000;
+        }
+
+            .sidebar-pro.collapsed {
+                width: 72px;
+            }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 26px;
+        }
+
+            .logo .emoji {
+                font-size: 22px;
+            }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+            .sidebar-menu a {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 10px;
+                border-radius: 12px;
+                color: var(--muted);
+                text-decoration: none;
+                font-weight: 600;
+                transition: all .22s ease;
+                box-shadow: inset 0 0 0 1px transparent;
+            }
+
+                .sidebar-menu a i {
+                    font-size: 18px;
+                    width: 22px;
+                    text-align: center;
+                    color: var(--primary);
+                }
+
+                .sidebar-menu a:hover {
+                    color: #073047;
+                    background: linear-gradient(90deg, rgba(43,158,219,0.06), rgba(0,191,166,0.03));
+                    transform: translateX(6px);
+                    box-shadow: 0 6px 18px rgba(32,122,180,0.06);
+                    animation: pulse 0.3s ease;
+                }
+
+                .sidebar-menu a.active {
+                    background: linear-gradient(90deg, rgba(43,158,219,0.08), rgba(0,191,166,0.04));
+                    color: #073047;
+                    box-shadow: 0 8px 22px rgba(43,158,219,0.06);
+                }
+
+        /* Main wrapper */
+        .main-wrapper {
+            margin-left: 260px;
+            transition: margin-left .28s ease;
+            overflow-x: auto;
+        }
+
+        .sidebar-pro.collapsed + .main-wrapper {
+            margin-left: 72px;
+        }
+
+        .sidebar-pro.collapsed:hover {
+            width: 260px;
+        }
+
+            .sidebar-pro.collapsed:hover + .main-wrapper {
+                margin-left: 260px;
+            }
+
+        /* Topbar */
+        .topbar-pro {
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 22px;
+            background: linear-gradient(180deg,#ffffff,#f8fdff);
+            border-bottom: 1px solid rgba(6,30,48,0.04);
+        }
+
+        .topbar-left {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-box {
+            width: 340px;
+            max-width: 38vw;
+            background: #f6fbfe;
+            border: 1px solid rgba(6,30,48,0.04);
+            padding: 8px 14px;
+            border-radius: 12px;
+            color: var(--muted);
+            outline: none;
+            transition: box-shadow .18s;
+        }
+
+            .search-box:focus {
+                box-shadow: 0 6px 18px rgba(43,158,219,0.06);
+                border-color: var(--primary);
+                color: var(--text);
+            }
+
+        /* Content */
+        .content-wrapper {
+            padding: 32px;
+            max-width: 100%;
+        }
+
+        /* Buttons */
+        .btn-animated {
+            transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s, filter .18s;
+        }
+
+            .btn-animated:hover {
+                transform: translateY(-3px) scale(1.01);
+                box-shadow: 0 12px 26px rgba(6,30,48,0.08);
+                filter: saturate(1.02);
+            }
+
+            .btn-animated:active {
+                transform: translateY(-1px);
+            }
+
+        /* Tables */
+        .table thead {
+            background: var(--panel);
+            color: var(--text);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .card-title {
+            color: var(--primary);
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Quản_lý_kho_hàng</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+    <partial name="_FlashMessages" />
+
+    <!-- SIDEBAR -->
+    <div class="sidebar-pro" id="sidebar">
+        <div class="logo">
+            <div class="emoji">📦</div>
+            <span>E-WAREHOUSE</span>
+        </div>
+
+        <div class="sidebar-menu">
+
+            <!-- Dashboard (ai đăng nhập cũng xem được) -->
+            <a asp-controller="Home" asp-action="Index" class="active">
+                <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+            </a>
+
+            <!-- Admin + Nhân viên kho -->
+            @if (User.IsInRole("Admin") || User.IsInRole("NhanVienKho"))
+            {
+                <a asp-controller="Kho" asp-action="Index">
+                    <i class="bi bi-box-seam"></i> <span>Quản lý kho</span>
+                </a>
+
+                <a asp-controller="HangHoa" asp-action="Index">
+                    <i class="bi bi-box"></i> <span>Hàng hóa</span>
+                </a>
+
+                <a asp-controller="PhieuNhap" asp-action="Index">
+                    <i class="bi bi-arrow-down-square"></i> <span>Phiếu nhập</span>
+                </a>
+
+                <a asp-controller="PhieuXuat" asp-action="Index">
+                    <i class="bi bi-arrow-up-square"></i> <span>Phiếu xuất</span>
+                </a>
+
+                <a asp-controller="NhaCungCap" asp-action="Index">
+                    <i class="bi bi-building"></i> <span>Nhà cung cấp</span>
+                </a>
+
+                <a asp-controller="KhachHang" asp-action="Index">
+                    <i class="bi bi-person"></i> <span>Khách hàng</span>
+                </a>
+            }
+
+            <!-- Admin + Quản lý -->
+            @if (User.IsInRole("Admin") || User.IsInRole("QuanLy"))
+            {
+                <a asp-controller="Reports" asp-action="Index">
+                    <i class="bi bi-bar-chart"></i> <span>Báo cáo</span>
+                </a>
+            }
+
+            <!-- Chỉ Admin -->
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="NhanVien" asp-action="Index">
+                    <i class="bi bi-people"></i> <span>Nhân viên</span>
+                </a>
+
+                <a asp-controller="AdminUser" asp-action="Index">
+                    <i class="bi bi-shield-lock"></i> <span>Phân quyền người dùng</span>
+                </a>
+            }
+
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Quản_lý_kho_hàng - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- MAIN -->
+    <div class="main-wrapper" id="main">
+        <!-- TOPBAR -->
+        <div class="topbar-pro">
+            <div class="topbar-left">
+                <button id="sidebarToggle" class="btn btn-sm btn-transparent text-white me-2" title="Toggle sidebar">
+                    <i class="bi bi-list" style="font-size:20px;color:var(--primary)"></i>
+                </button>
+                <span>@ViewData["Title"]</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <input type="text" class="search-box" placeholder="Tìm kiếm..." />
+                <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="ms-2">
+                    <button type="submit" class="btn btn-sm btn-danger btn-animated">
+                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    </button>
+                </form>
+            </div>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+        <!-- CONTENT -->
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function(){
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+
+            toggle.addEventListener('click', function(){
+                sidebar.classList.toggle('collapsed');
+                toggle.classList.toggle('collapsed');
+            });
+
+            // Add fade-in animation to content on load
+            document.addEventListener('DOMContentLoaded', function() {
+                const content = document.querySelector('.content-wrapper');
+                if (content) {
+                    content.style.opacity = '0';
+                    content.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        content.style.transition = 'all 0.6s ease-out';
+                        content.style.opacity = '1';
+                        content.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+            });
+        })();
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

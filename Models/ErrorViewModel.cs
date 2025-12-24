@@ -1,4 +1,4 @@
-namespace Quản_lý_kho_hàng.Models
+namespace QLKhoHang.Models
 {
     public class ErrorViewModel
     {

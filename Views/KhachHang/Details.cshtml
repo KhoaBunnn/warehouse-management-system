@@ -1,48 +1,272 @@
 ﻿@model QLKhoHang.Models.KhachHang
 
-<h2>Chi tiết khách hàng</h2>
+@{
+    ViewData["Title"] = "Chi tiết khách hàng";
+}
 
-<div class="card p-3">
-    <h4>@Model.TenKH (@Model.MaKH)</h4>
+<style>
+    .customer-header-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 32px;
+        color: white;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        margin-bottom: 32px;
+    }
 
-    <p><strong>SĐT:</strong> @Model.SDT</p>
-    <p><strong>Địa chỉ:</strong> @Model.DiaChi</p>
+    .customer-avatar {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin-bottom: 16px;
+        backdrop-filter: blur(10px);
+    }
+
+    .info-item {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 12px 20px;
+        border-radius: 10px;
+        margin: 8px 0;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .info-item i {
+        font-size: 20px;
+        color: #ffd700;
+        width: 24px;
+    }
+
+    .info-item strong {
+        color: #ffd700;
+        margin-right: 8px;
+        min-width: 100px;
+    }
+
+    .section-title {
+        color: #667eea;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid #667eea;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .table-modern {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .table-modern thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .table-modern thead th {
+        border: none;
+        padding: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table-modern tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .table-modern tbody tr:hover {
+        background: #f8f9ff;
+        transform: scale(1.01);
+    }
+
+    .table-modern tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .btn-modern {
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.3;
+    }
+
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 8px;
+    }
+
+    .stats-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+
+<div class="customer-header-card">
+    <div class="d-flex align-items-start">
+        <div class="customer-avatar">
+            <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="flex-grow-1 ms-4">
+            <h2 class="mb-3" style="font-weight: 700;">
+                @Model.TenKH
+            </h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="bi bi-tag"></i>
+                        <strong>Mã KH:</strong>
+                        <span>@Model.MaKH</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="bi bi-telephone"></i>
+                        <strong>SĐT:</strong>
+                        <span>@(Model.SDT ?? "Chưa cập nhật")</span>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-2">
+                    <div class="info-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <strong>Địa chỉ:</strong>
+                        <span>@(Model.DiaChi ?? "Chưa cập nhật")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<hr />
+@if (Model.PhieuXuat != null && Model.PhieuXuat.Any())
+{
+    <div class="stats-card">
+        <div class="stats-number">@Model.PhieuXuat.Count</div>
+        <div class="stats-label">Tổng số phiếu xuất</div>
+    </div>
+}
 
-<h4>Danh sách phiếu xuất</h4>
+<div class="section-title">
+    <i class="bi bi-receipt"></i>
+    <span>Danh sách phiếu xuất</span>
+</div>
 
 @if (Model.PhieuXuat == null || !Model.PhieuXuat.Any())
 {
-    <p class="text-muted">Không có phiếu xuất nào.</p>
+    <div class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <h5 class="mt-3">Chưa có phiếu xuất</h5>
+        <p class="text-muted">Khách hàng này chưa có phiếu xuất nào trong hệ thống</p>
+    </div>
 }
 else
 {
-    <table class="table table-bordered mt-2">
-        <thead>
-            <tr>
-                <th>Mã PX</th>
-                <th>Ngày xuất</th>
-                <th>Nhân viên</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var px in Model.PhieuXuat)
-            {
+    <div class="table-modern">
+        <table class="table table-hover mb-0">
+            <thead>
                 <tr>
-                    <td>@px.MaPX</td>
-                    <td>@px.NgayXuat.ToString("dd/MM/yyyy")</td>
-                    <td>@px.NhanVien?.TenNV</td>
-                    <td>
-                        <a asp-controller="PhieuXuat" asp-action="Details" asp-route-id="@px.MaPX" class="btn btn-info btn-sm">
-                            Xem
-                        </a>
-                    </td>
+                    <th class="text-center">Mã PX</th>
+                    <th>Ngày xuất</th>
+                    <th>Nhân viên</th>
+                    <th class="text-center" width="120">Thao tác</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var px in Model.PhieuXuat.OrderByDescending(x => x.NgayXuat))
+                {
+                    <tr>
+                        <td class="text-center">
+                            <span class="badge bg-primary" style="font-size: 0.9rem; padding: 8px 12px;">
+                                @px.MaPX
+                            </span>
+                        </td>
+                        <td>
+                            <i class="bi bi-calendar3 text-muted"></i>
+                            @px.NgayXuat.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            <i class="bi bi-person text-muted"></i>
+                            @px.NhanVien?.TenNV
+                        </td>
+                        <td class="text-center">
+                            <a asp-controller="PhieuXuat" 
+                               asp-action="Details" 
+                               asp-route-id="@px.MaPX" 
+                               class="btn btn-view btn-modern">
+                                <i class="bi bi-eye"></i> Xem
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
-<a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary btn-modern">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>

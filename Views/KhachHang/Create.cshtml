@@ -1,30 +1,98 @@
 ﻿@model QLKhoHang.Models.KhachHang
 
-<h2>Thêm khách hàng</h2>
+@{
+    ViewData["Title"] = "Thêm khách hàng";
+}
 
-<form asp-action="Create" method="post">
+<div class="page-header fade-in">
+    <h2><i class="bi bi-person-plus"></i> Thêm khách hàng</h2>
+    <p class="subtitle">Tạo hồ sơ khách hàng mới trong hệ thống</p>
+</div>
 
-    <div class="form-group">
-        <label>Mã khách hàng</label>
-        <input asp-for="MaKH" class="form-control" value="@ViewBag.MaKH" readonly />
+<div class="form-modern card-glass">
+    <div class="form-header">
+        <h3><i class="bi bi-person text-primary"></i> Thông tin khách hàng</h3>
+        <p class="subtitle">Điền đầy đủ thông tin để tạo khách hàng mới</p>
     </div>
 
-    <div class="form-group">
-        <label>Tên khách hàng</label>
-        <input asp-for="TenKH" class="form-control" />
-        <span asp-validation-for="TenKH" class="text-danger"></span>
-    </div>
+    <form asp-action="Create" method="post" id="createForm">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
-    <div class="form-group">
-        <label>Số điện thoại</label>
-        <input asp-for="SDT" class="form-control" />
-    </div>
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-info-circle"></i>
+                <span>Thông tin cơ bản</span>
+            </div>
 
-    <div class="form-group">
-        <label>Địa chỉ</label>
-        <input asp-for="DiaChi" class="form-control" />
-    </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="bi bi-tag"></i>
+                        Mã khách hàng
+                    </label>
+                    <input asp-for="MaKH" class="form-control" value="@ViewBag.MaKH" readonly 
+                           style="background-color: #f8f9fa; cursor: not-allowed;" />
+                </div>
 
-    <button type="submit" class="btn btn-primary mt-2">Lưu</button>
-    <a asp-action="Index" class="btn btn-secondary mt-2">Quay lại</a>
-</form>
+                <div class="col-md-6">
+                    <label asp-for="TenKH" class="form-label required">
+                        <i class="bi bi-person"></i>
+                        Tên khách hàng
+                    </label>
+                    <input asp-for="TenKH" class="form-control" placeholder="Nhập tên khách hàng..." />
+                    <span asp-validation-for="TenKH" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-telephone"></i>
+                <span>Liên hệ</span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="SDT" class="form-label">
+                        <i class="bi bi-telephone"></i>
+                        Số điện thoại
+                    </label>
+                    <input asp-for="SDT" class="form-control" placeholder="Nhập số điện thoại..." />
+                    <span asp-validation-for="SDT" class="field-validation-error"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="DiaChi" class="form-label">
+                        <i class="bi bi-geo-alt"></i>
+                        Địa chỉ
+                    </label>
+                    <input asp-for="DiaChi" class="form-control" placeholder="Nhập địa chỉ..." />
+                    <span asp-validation-for="DiaChi" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-secondary btn-modern">
+                <i class="bi bi-arrow-left me-2"></i>Quay lại
+            </a>
+            <button type="submit" class="btn btn-primary btn-modern" id="submitBtn">
+                <i class="bi bi-check-lg me-2"></i>Lưu khách hàng
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('btn-loading');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý...';
+        });
+    </script>
+}

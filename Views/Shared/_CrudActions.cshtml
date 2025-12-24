@@ -1,0 +1,31 @@
+@inherits Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
+<div class="d-flex align-items-center gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm btn-animated" title="Quay lại">
+        <i class="bi bi-arrow-left"></i>
+        <span class="d-none d-md-inline"> Quay lại</span>
+    </a>
+
+    <button type="submit" form="mainForm" class="btn btn-primary btn-sm btn-animated" title="Lưu">
+        <i class="bi bi-save"></i>
+        <span class="d-none d-md-inline"> Lưu</span>
+    </button>
+
+    <a asp-action="Create" class="btn btn-success btn-sm btn-animated d-none d-md-inline" title="Tạo mới">
+        <i class="bi bi-plus-lg"></i> Tạo mới
+    </a>
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle d-none d-md-inline" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots"></i> Hành động
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" onclick="navigator.clipboard.writeText(window.location.href); return false;"><i class="bi bi-link-45deg me-2"></i>Sao chép liên kết</a></li>
+            <li><a class="dropdown-item" href="#" onclick="alert('Tính năng xuất CSV chưa bật'); return false;"><i class="bi bi-download me-2"></i>Xuất CSV</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" onclick="return confirm('Bạn có chắc muốn xóa nhiều?');"><i class="bi bi-trash me-2"></i>Xóa nhiều</a></li>
+        </ul>
+    </div>
+
+    <!-- compact icons for small screens -->
+    <a class="btn btn-sm btn-outline-secondary d-inline d-md-none" title="Hành động" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots"></i></a>
+</div>

@@ -4,6 +4,11 @@
 
 <form asp-action="Edit" method="post">
 
+    <!-- HIỂN THỊ LỖI -->
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <input type="hidden" asp-for="MaPN" />
+
     <div class="form-group">
         <label>Mã phiếu nhập</label>
         <input asp-for="MaPN" class="form-control" readonly />
@@ -16,26 +21,16 @@
 
     <div class="form-group">
         <label>Nhân viên</label>
-        <select asp-for="MaNV" class="form-control">
-            @foreach (var nv in ViewBag.NhanVien)
-            {
-                <option value="@nv.MaNV" selected="@(nv.MaNV == Model.MaNV)">
-                    @nv.TenNV
-                </option>
-            }
-        </select>
+        <select asp-for="MaNV"
+                asp-items="@(new SelectList(ViewBag.NhanVien, "MaNV", "TenNV"))"
+                class="form-control"></select>
     </div>
 
     <div class="form-group">
         <label>Nhà cung cấp</label>
-        <select asp-for="MaNCC" class="form-control">
-            @foreach (var ncc in ViewBag.NCC)
-            {
-                <option value="@ncc.MaNCC" selected="@(ncc.MaNCC == Model.MaNCC)">
-                    @ncc.TenNCC
-                </option>
-            }
-        </select>
+        <select asp-for="MaNCC"
+                asp-items="@(new SelectList(ViewBag.NCC, "MaNCC", "TenNCC"))"
+                class="form-control"></select>
     </div>
 
     <button type="submit" class="btn btn-primary mt-2">Lưu thay đổi</button>

@@ -5,7 +5,10 @@
 
 <form asp-action="Create" method="post">
 
-    <input type="hidden" name="MaPN" value="@ViewBag.MaPN" />
+    <!-- HIỂN THỊ TẤT CẢ LỖI TRẢ VỀ TỪ CONTROLLER -->
+    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+    <input type="hidden" asp-for="MaPN" value="@ViewBag.MaPN" />
 
     <div class="form-group mb-2">
         <label>Hàng hóa</label>

@@ -1,32 +1,83 @@
 ﻿@model IEnumerable<QLKhoHang.Models.NhaCungCap>
 
-<h2>Danh sách Nhà cung cấp</h2>
+@{
+    ViewData["Title"] = "Danh sách Nhà cung cấp";
+}
 
-<a class="btn btn-primary mb-3" href="/NhaCungCap/Create">Thêm NCC</a>
+<div class="page-header fade-in">
+    <h2><i class="bi bi-building"></i> Danh sách Nhà cung cấp</h2>
+    <p class="subtitle">Quản lý thông tin các nhà cung cấp</p>
+</div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Mã NCC</th>
-            <th>Tên NCC</th>
-            <th>SDT</th>
-            <th>Địa chỉ</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.MaNCC</td>
-                <td>@item.TenNCC</td>
-                <td>@item.SDT</td>
-                <td>@item.DiaChi</td>
-                <td>
-                    <a href="/NhaCungCap/Edit/@item.MaNCC" class="btn btn-sm btn-warning">Sửa</a>
-                    <a href="/NhaCungCap/Delete/@item.MaNCC" class="btn btn-sm btn-danger">Xóa</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card-glass metric-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="mb-0 fw-bold">Nhà cung cấp</h5>
+            <div class="text-muted small">Tổng số: @Model.Count() nhà cung cấp</div>
+        </div>
+        <a asp-action="Create" class="btn btn-primary btn-modern">
+            <i class="bi bi-plus-circle me-2"></i>Thêm Nhà Cung Cấp
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table-modern table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="text-center">Mã NCC</th>
+                    <th>Tên NCC</th>
+                    <th>SĐT</th>
+                    <th>Địa chỉ</th>
+                    <th class="text-center" width="150">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <span class="badge bg-primary">@item.MaNCC</span>
+                            </td>
+                            <td>
+                                <i class="bi bi-building text-muted"></i>
+                                <strong>@item.TenNCC</strong>
+                            </td>
+                            <td>
+                                <i class="bi bi-telephone text-muted"></i>
+                                @item.SDT
+                            </td>
+                            <td>
+                                <i class="bi bi-geo-alt text-muted"></i>
+                                @item.DiaChi
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a asp-action="Edit" asp-route-id="@item.MaNCC" 
+                                       class="btn btn-sm btn-warning btn-animated" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.MaNCC" 
+                                       class="btn btn-sm btn-danger btn-animated" title="Xóa"
+                                       onclick="return confirm('Bạn có chắc muốn xóa nhà cung cấp @item.TenNCC không?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p class="mt-3">Chưa có nhà cung cấp nào</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

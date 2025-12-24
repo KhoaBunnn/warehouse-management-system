@@ -1,58 +1,82 @@
-﻿@model QLKhoHang.Models.HangHoaCreateViewModel
+﻿@model QLKhoHang.Models.ViewModels.HangHoaBaseViewModel
 
 @{
-    ViewData["Title"] = "Thêm hàng hóa mới";
+    ViewData["Title"] = "Thêm hàng hóa";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="card-glass metric-card mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+            <h5 class="mb-0">Thêm hàng hóa</h5>
+            <small class="text-muted">Tạo bản ghi mới cho kho hàng</small>
+        </div>
+        <div>
+            <partial name="_CrudActions" />
+        </div>
+    </div>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="MaHang"></label>
-        <input asp-for="MaHang" class="form-control" />
-        <span asp-validation-for="MaHang" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="TenHang"></label>
-        <input asp-for="TenHang" class="form-control" />
-        <span asp-validation-for="TenHang" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="DonViTinh"></label>
-        <input asp-for="DonViTinh" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="SoLuongTon"></label>
-        <input asp-for="SoLuongTon" class="form-control" />
-        <span asp-validation-for="SoLuongTon" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="GiaNhap"></label>
-        <input asp-for="GiaNhap" class="form-control" />
-        <span asp-validation-for="GiaNhap" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="GiaXuat"></label>
-        <input asp-for="GiaXuat" class="form-control" />
-        <span asp-validation-for="GiaXuat" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="MaLoai"></label>
-        <select asp-for="MaLoai" asp-items="Model.LoaiHangList" class="form-control">
-            <option value="">-- Chọn loại hàng --</option>
-        </select>
-        <span asp-validation-for="MaLoai" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="MaKho"></label>
-        <select asp-for="MaKho" asp-items="Model.KhoList" class="form-control">
-            <option value="">-- Chọn kho --</option>
-        </select>
-        <span asp-validation-for="MaKho" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-success">Lưu</button>
-</form>
+    <form id="mainForm" asp-action="Create" method="post">
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="card p-3 h-100 border-0" style="background:linear-gradient(180deg, rgba(43,158,219,0.04), rgba(6,30,48,0.02));">
+                    <div class="mb-3">
+                        <label class="form-label">Mã hàng</label>
+                        @Html.TextBoxFor(m => m.MaHang, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.ValidationMessageFor(m => m.MaHang, "", new { @class = "text-danger" })
+                    </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+                    <div class="mb-3">
+                        <label class="form-label">Tên hàng</label>
+                        @Html.TextBoxFor(m => m.TenHang, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.TenHang, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Đơn vị tính</label>
+                        @Html.TextBoxFor(m => m.DonViTinh, new { @class = "form-control" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Số lượng tồn</label>
+                        @Html.TextBoxFor(m => m.SoLuongTon, new { @class = "form-control", type = "number" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card p-3 h-100 border-0" style="background:linear-gradient(180deg, rgba(255,195,0,0.04), rgba(6,30,48,0.02));">
+                    <div class="mb-3">
+                        <label class="form-label">Giá nhập</label>
+                        @Html.TextBoxFor(m => m.GiaNhap, new { @class = "form-control", type = "number", step = "0.01" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Giá xuất</label>
+                        @Html.TextBoxFor(m => m.GiaXuat, new { @class = "form-control", type = "number", step = "0.01" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Loại hàng</label>
+                        @Html.DropDownListFor(m => m.MaLoai,
+                        new SelectList(Model.LoaiHangList, "Value", "Text"),
+                                            "-- Chọn loại --",
+                                            new { @class = "form-select" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Kho</label>
+                        @Html.DropDownListFor(m => m.MaKho,
+                                            new SelectList(Model.KhoList, "Value", "Text"),
+                                            "-- Chọn kho --",
+                                            new { @class = "form-select" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-animated">Hủy</a>
+            <button type="submit" class="btn btn-primary btn-animated">Lưu</button>
+        </div>
+    </form>
+</div>

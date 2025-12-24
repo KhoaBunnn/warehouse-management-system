@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using QLKhoHang.Models;
 
 namespace QLKhoHang.Data
 {
-    public class QLKhoHangContext : DbContext
+    public class QLKhoHangContext : IdentityDbContext<IdentityUser>
     {
         public QLKhoHangContext(DbContextOptions<QLKhoHangContext> options)
             : base(options)
@@ -18,21 +20,39 @@ namespace QLKhoHang.Data
         public DbSet<NhaCungCap> NhaCungCap { get; set; }
         public DbSet<PhieuNhap> PhieuNhap { get; set; }
         public DbSet<CT_PhieuNhap> CT_PhieuNhap { get; set; }
-        public DbSet<PhieuXuat> PhieuXuat
-        {
-            get; set;
-        }
+        public DbSet<PhieuXuat> PhieuXuat { get; set; }
         public DbSet<CT_PhieuXuat> CT_PhieuXuat { get; set; }
+        public DbSet<LichSuSuaPhieu> LichSuSuaPhieu { get; set; }
+        public DbSet<BaoCaoNhapHang> BaoCaoNhapHang { get; set; }
+        public DbSet<BaoCaoXuatHang> BaoCaoXuatHang { get; set; }
+        public DbSet<BaoCaoTonKho> BaoCaoTonKho { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Khóa chính ghép cho phiếu nhập
+            base.OnModelCreating(modelBuilder); // **Bắt buộc** khi dùng IdentityDbContext
+
             modelBuilder.Entity<CT_PhieuNhap>()
                 .HasKey(c => new { c.MaPN, c.MaHang });
 
-            // Khóa chính ghép cho phiếu xuất
             modelBuilder.Entity<CT_PhieuXuat>()
                 .HasKey(c => new { c.MaPX, c.MaHang });
+
+            modelBuilder.Entity<CT_PhieuNhap>()
+                .Property(p => p.MaPN)
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<CT_PhieuXuat>()
+                .Property(p => p.MaPX)
+                .ValueGeneratedNever();
+
+            // Tắt OUTPUT CLAUSE cho bảng có trigger
+            modelBuilder.Entity<PhieuNhap>().ToTable(tb => tb.UseSqlOutputClause(false));
+            modelBuilder.Entity<CT_PhieuNhap>().ToTable(tb => tb.UseSqlOutputClause(false));
+
+            modelBuilder.Entity<PhieuXuat>().ToTable(tb => tb.UseSqlOutputClause(false));
+            modelBuilder.Entity<CT_PhieuXuat>().ToTable(tb => tb.UseSqlOutputClause(false));
+
+            modelBuilder.Entity<HangHoa>().ToTable(tb => tb.UseSqlOutputClause(false));
         }
     }
 }

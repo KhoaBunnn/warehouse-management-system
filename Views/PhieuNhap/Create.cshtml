@@ -1,40 +1,110 @@
 ﻿@model QLKhoHang.Models.PhieuNhap
 
-<h2>Tạo phiếu nhập</h2>
+@{
+    ViewData["Title"] = "Tạo phiếu nhập";
+}
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label>Mã phiếu nhập</label>
-        <input name="MaPN" class="form-control" value="@ViewBag.MaPN" readonly />
+<div class="page-header fade-in">
+    <h2><i class="bi bi-file-earmark-plus"></i> Tạo phiếu nhập</h2>
+    <p class="subtitle">Thêm phiếu nhập hàng mới vào hệ thống</p>
+</div>
+
+<div class="form-modern card-glass">
+    <div class="form-header">
+        <h3><i class="bi bi-arrow-down-square text-primary"></i> Thông tin phiếu nhập</h3>
+        <p class="subtitle">Điền đầy đủ thông tin để tạo phiếu nhập mới</p>
     </div>
 
-    <div class="form-group">
-        <label>Ngày nhập</label>
-        <input asp-for="NgayNhap" type="date" class="form-control" />
-    </div>
+    <form asp-action="Create" method="post" id="createForm">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
-    <div class="form-group">
-        <label>Nhân viên</label>
-        <select asp-for="MaNV" class="form-control">
-            <option value="">-- Chọn nhân viên --</option>
-            @foreach (var nv in ViewBag.NhanVien)
-            {
-                <option value="@nv.MaNV">@nv.TenNV</option>
-            }
-        </select>
-    </div>
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-info-circle"></i>
+                <span>Thông tin cơ bản</span>
+            </div>
 
-    <div class="form-group">
-        <label>Nhà cung cấp</label>
-        <select asp-for="MaNCC" class="form-control">
-            <option value="">-- Chọn NCC --</option>
-            @foreach (var ncc in ViewBag.NCC)
-            {
-                <option value="@ncc.MaNCC">@ncc.TenNCC</option>
-            }
-        </select>
-    </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="bi bi-tag"></i>
+                        Mã phiếu nhập
+                    </label>
+                    <input name="MaPN" class="form-control" value="@ViewBag.MaPN" readonly 
+                           style="background-color: #f8f9fa; cursor: not-allowed;" />
+                </div>
 
-    <button type="submit" class="btn btn-primary mt-2">Lưu</button>
-    <a asp-action="Index" class="btn btn-secondary mt-2">Quay lại</a>
-</form>
+                <div class="col-md-6">
+                    <label class="form-label required">
+                        <i class="bi bi-calendar3"></i>
+                        Ngày nhập
+                    </label>
+                    <input asp-for="NgayNhap" type="date" class="form-control" />
+                    <span asp-validation-for="NgayNhap" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-people"></i>
+                <span>Nhân viên & Nhà cung cấp</span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label required">
+                        <i class="bi bi-person"></i>
+                        Nhân viên
+                    </label>
+                    <select asp-for="MaNV" class="form-select">
+                        <option value="">-- Chọn nhân viên --</option>
+                        @foreach (var nv in ViewBag.NhanVien)
+                        {
+                            <option value="@nv.MaNV">@nv.TenNV</option>
+                        }
+                    </select>
+                    <span asp-validation-for="MaNV" class="field-validation-error"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label required">
+                        <i class="bi bi-building"></i>
+                        Nhà cung cấp
+                    </label>
+                    <select asp-for="MaNCC" class="form-select">
+                        <option value="">-- Chọn nhà cung cấp --</option>
+                        @foreach (var ncc in ViewBag.NCC)
+                        {
+                            <option value="@ncc.MaNCC">@ncc.TenNCC</option>
+                        }
+                    </select>
+                    <span asp-validation-for="MaNCC" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-secondary btn-modern">
+                <i class="bi bi-arrow-left me-2"></i>Quay lại
+            </a>
+            <button type="submit" class="btn btn-primary btn-modern" id="submitBtn">
+                <i class="bi bi-check-lg me-2"></i>Lưu phiếu nhập
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('btn-loading');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý...';
+        });
+    </script>
+}

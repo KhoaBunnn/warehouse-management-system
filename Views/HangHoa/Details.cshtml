@@ -1,0 +1,23 @@
+@model QLKhoHang.Models.HangHoa
+
+@{
+    ViewBag.Title = "Chi tiết hàng hóa";
+}
+
+<div class="container mt-4">
+    <h3>Chi tiết hàng hóa</h3>
+
+    <div class="card p-3 mt-3">
+        <p><strong>Mã hàng:</strong> @Model.MaHang</p>
+        <p><strong>Tên hàng:</strong> @Model.TenHang</p>
+        <p><strong>Đơn vị tính:</strong> @Model.DonViTinh</p>
+        <p><strong>Số lượng tồn:</strong> @Model.SoLuongTon</p>
+        <p><strong>Giá nhập:</strong> @Model.GiaNhap</p>
+        <p><strong>Giá xuất:</strong> @Model.GiaXuat</p>
+        <p><strong>Loại:</strong> @Model.LoaiHang?.TenLoai</p>
+        <p><strong>Kho:</strong> @Model.Kho?.TenKho</p>
+    </div>
+
+    <a href="@Url.Action("Edit", new { id = Model.MaHang })" class="btn btn-warning mt-3">Sửa</a>
+    <a href="@Url.Action("Index")" class="btn btn-secondary mt-3">Quay lại</a>
+</div>

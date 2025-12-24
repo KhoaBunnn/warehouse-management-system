@@ -1,0 +1,24 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityUser
+
+<h2>Phân quyền cho: @Model.Email</h2>
+
+<form asp-action="UpdateRoles" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="mb-3">
+        @foreach (var role in ViewBag.AllRoles)
+        {
+            bool isChecked = ViewBag.UserRoles.Contains(role.Name);
+
+            <div>
+                <label>
+                    <input type="checkbox" name="roles" value="@role.Name" @(isChecked ? "checked" : "") />
+                    @role.Name
+                </label>
+            </div>
+        }
+    </div>
+
+    <button class="btn btn-success" type="submit">Lưu phân quyền</button>
+    <a href="/AdminUser" class="btn btn-secondary">Quay lại</a>
+</form>

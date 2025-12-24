@@ -26,7 +26,6 @@ namespace QLKhoHang.Controllers
 
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CT_PhieuNhap ct)
@@ -38,10 +37,15 @@ namespace QLKhoHang.Controllers
                 return View(ct);
             }
 
-            // Kiểm tra tồn tại phiếu nhập
+            // Kiểm tra phiếu nhập
             var phieu = _context.PhieuNhap.FirstOrDefault(p => p.MaPN == ct.MaPN);
             if (phieu == null)
-                return NotFound();
+            {
+                ModelState.AddModelError("", "Phiếu nhập không tồn tại!");
+                ViewBag.MaPN = ct.MaPN;
+                ViewBag.HangHoa = _context.HangHoa.ToList();
+                return View(ct);
+            }
 
             // Kiểm tra hàng hóa
             var hangHoa = _context.HangHoa.FirstOrDefault(h => h.MaHang == ct.MaHang);
@@ -53,7 +57,7 @@ namespace QLKhoHang.Controllers
                 return View(ct);
             }
 
-            // Nếu hàng đã có trong phiếu => cộng dồn
+            // Nếu hàng hóa đã tồn tại trong phiếu
             var ctTonTai = _context.CT_PhieuNhap
                                    .FirstOrDefault(x => x.MaPN == ct.MaPN && x.MaHang == ct.MaHang);
 
@@ -67,14 +71,92 @@ namespace QLKhoHang.Controllers
                 _context.CT_PhieuNhap.Add(ct);
             }
 
-            // Cộng số lượng tồn kho
+            // Cập nhật tồn kho
             hangHoa.SoLuongTon += ct.SoLuong;
 
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();   // ❗ Nếu lỗi xảy ra → catch
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Không thể lưu dữ liệu. Lỗi: " + ex.Message);
+
+                ViewBag.MaPN = ct.MaPN;
+                ViewBag.HangHoa = _context.HangHoa.ToList();
+
+                return View(ct); // HIỆN LỖI RA VIEW
+            }
 
             return RedirectToAction("Details", "PhieuNhap", new { id = ct.MaPN });
         }
 
+        // ====== GET: SỬA CHI TIẾT PHIẾU NHẬP ======
+        public IActionResult Edit(string maPN, string maHang)
+        {
+            if (string.IsNullOrEmpty(maPN) || string.IsNullOrEmpty(maHang))
+                return NotFound();
+
+            var ct = _context.CT_PhieuNhap
+                             .Include(x => x.HangHoa)
+                             .FirstOrDefault(x => x.MaPN == maPN && x.MaHang == maHang);
+
+            if (ct == null)
+                return NotFound();
+
+            ViewBag.HangHoa = _context.HangHoa.ToList();
+            return View(ct);
+        }
+
+
+
+        // ====== POST: SỬA CHI TIẾT PHIẾU NHẬP ======
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(CT_PhieuNhap ctMoi)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.HangHoa = _context.HangHoa.ToList();
+                return View(ctMoi);
+            }
+
+            var ctCu = _context.CT_PhieuNhap
+                               .FirstOrDefault(x => x.MaPN == ctMoi.MaPN && x.MaHang == ctMoi.MaHang);
+
+            if (ctCu == null)
+                return NotFound();
+
+
+            // ============================
+            // CẬP NHẬT TỒN KHO ĐÚNG CHUẨN
+            // ============================
+
+            var hangHoa = _context.HangHoa.FirstOrDefault(h => h.MaHang == ctMoi.MaHang);
+
+            if (hangHoa == null)
+                return NotFound();
+
+            // Trừ số lượng cũ khỏi tồn kho
+            hangHoa.SoLuongTon -= ctCu.SoLuong;
+
+            // Cộng số lượng mới vào tồn kho
+            hangHoa.SoLuongTon += ctMoi.SoLuong;
+
+            if (hangHoa.SoLuongTon < 0)
+                hangHoa.SoLuongTon = 0;
+
+            // ============================
+            // Cập nhật dữ liệu chi tiết
+            // ============================
+
+            ctCu.SoLuong = ctMoi.SoLuong;
+            ctCu.DonGiaNhap = ctMoi.DonGiaNhap;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Details", "PhieuNhap", new { id = ctMoi.MaPN });
+        }
 
 
         // ====== XÓA CHI TIẾT PHIẾU NHẬP ======

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QLKhoHang.Models;
 using QLKhoHang.Repositories;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace QLKhoHang.Controllers
 {
+    [Authorize(Roles = "Admin,NhanVienKho")]
     public class LoaiHangController : Controller
     {
         private readonly ILoaiHangRepository _repo;

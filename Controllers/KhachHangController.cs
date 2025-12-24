@@ -53,6 +53,7 @@ namespace QLKhoHang.Controllers
 
                 _context.KhachHang.Add(kh);
                 _context.SaveChanges();
+                TempData["Success"] = "Thêm khách hàng thành công.";
                 return RedirectToAction("Index");
             }
 
@@ -77,6 +78,7 @@ namespace QLKhoHang.Controllers
             {
                 _context.KhachHang.Update(kh);
                 _context.SaveChanges();
+                TempData["Success"] = "Cập nhật khách hàng thành công.";
                 return RedirectToAction("Index");
             }
 
@@ -138,7 +140,7 @@ namespace QLKhoHang.Controllers
 
             _context.KhachHang.Remove(kh);
             _context.SaveChanges();
-
+            TempData["Success"] = "Xóa khách hàng thành công.";
             return RedirectToAction("Index");
         }
 
